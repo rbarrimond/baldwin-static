@@ -10,14 +10,39 @@ paths:
     get:
       summary: Fetch recent emails
       operationId: scanMail
+      parameters:
+        - name: days
+          in: query
+          description: Number of past days to fetch emails from
+          required: false
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Successful scan
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    subject:
+                      type: string
+                    from:
+                      type: string
+                    date:
+                      type: string
+                      format: date-time
+                    body:
+                      type: string
   /summarize-email:
     post:
       summary: Summarize a single email
       operationId: summarizeEmail
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -28,3 +53,64 @@ paths:
       responses:
         '200':
           description: Summary result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary:
+                    type: string
+  /build-digest:
+    post:
+      summary: Build a Markdown digest from email summaries
+      operationId: buildDigest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summaries:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      summary:
+                        type: string
+                audience:
+                  type: string
+      responses:
+        '200':
+          description: Digest result
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /send-digest:
+    post:
+      summary: Send a prepared digest email
+      operationId: sendDigest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                subject:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Email dispatch confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
