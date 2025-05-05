@@ -5,7 +5,8 @@
       "appLocation": "src",
       "outputLocation": "dist",
       "appName": "swa-baldwin-prod-59o7",
-      "resourceGroup": "rg-core-prod-59o7"
+      "resourceGroup": "rg-core-prod-59o7",
+      "environment": "production"
     }
   }
 }
