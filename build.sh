@@ -11,11 +11,12 @@ echo "Cleaning $DIST_DIR..."
 rm -rf "$DIST_DIR"
 mkdir -p "$DIST_DIR/.well-known"
 
-# Copy top-level files
+# Copy all files and directories from src to dist, preserving structure
 echo "Copying static files..."
-cp "$SRC_DIR/openapi.yaml" "$DIST_DIR/"
-cp "$SRC_DIR/index.html" "$DIST_DIR/"
-cp "$SRC_DIR/logo.png" "$DIST_DIR/"
+cp -r "$SRC_DIR/"* "$DIST_DIR/"
+
+# Ensure .well-known directory is properly handled
+mkdir -p "$DIST_DIR/.well-known"
 cp "$SRC_DIR/.well-known/ai-plugin.json" "$DIST_DIR/.well-known/"
 
 echo "Build complete: contents copied to $DIST_DIR"
