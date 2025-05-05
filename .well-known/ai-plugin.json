@@ -1,0 +1,19 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "Baldwin Inbox Assistant",
+    "name_for_model": "baldwin_inbox_assistant",
+    "description_for_human": "Manages and summarizes email for Robert and Lisa.",
+    "description_for_model": "Use this to fetch, summarize, and route email to Robert and Lisa. Also formats and sends digests.",
+    "auth": {
+      "type": "none"
+    },
+    "api": {
+      "type": "openapi",
+      "url": "https://baldwin.azure.barrimond.net/openapi.yaml",
+      "is_user_authenticated": false
+    },
+    "logo_url": "https://baldwin.azure.barrimond.net/logo.png",
+    "contact_email": "robert@barrimond.com",
+    "legal_info_url": "https://rlbenterprisesllc.com/legal"
+  }
+  

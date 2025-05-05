@@ -1,0 +1,30 @@
+openapi: 3.0.1
+info:
+  title: Baldwin Inbox Assistant
+  version: 1.0.0
+  description: API for managing and summarizing email inboxes
+servers:
+  - url: https://baldwin-api.azure.barrimond.net/api
+paths:
+  /scan-mail:
+    get:
+      summary: Fetch recent emails
+      operationId: scanMail
+      responses:
+        '200':
+          description: Successful scan
+  /summarize-email:
+    post:
+      summary: Summarize a single email
+      operationId: summarizeEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+      responses:
+        '200':
+          description: Summary result
