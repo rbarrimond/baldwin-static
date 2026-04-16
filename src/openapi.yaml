@@ -2,13 +2,50 @@ openapi: 3.0.1
 info:
   title: Baldwin Inbox Assistant
   version: 1.0.0
-  description: API for managing and summarizing email inboxes
+  description: API for scanning inboxes, summarizing content, building digests, and sending email updates
 servers:
   - url: https://baldwin.azure.barrimond.net/api
+components:
+  schemas:
+    EmailMessage:
+      type: object
+      properties:
+        subject:
+          type: string
+        sender:
+          type: string
+        to:
+          type: array
+          items:
+            type: string
+          nullable: true
+        cc:
+          type: array
+          items:
+            type: string
+          nullable: true
+        bcc:
+          type: array
+          items:
+            type: string
+          nullable: true
+        date:
+          type: string
+        body:
+          type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
 paths:
   /scan-mail:
     get:
-      summary: Fetch recent emails
+      summary: Fetch recent emails from the configured IMAP inbox
       operationId: scanMail
       parameters:
         - name: days
@@ -26,20 +63,22 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    subject:
-                      type: string
-                    from:
-                      type: string
-                    date:
-                      type: string
-                      format: date-time
-                    body:
-                      type: string
+                  $ref: '#/components/schemas/EmailMessage'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: IMAP upstream failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /summarize-email:
     post:
-      summary: Summarize a single email
+      summary: Summarize a single email body locally
       operationId: summarizeEmail
       requestBody:
         required: true
@@ -60,6 +99,12 @@ paths:
                 properties:
                   summary:
                     type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /build-digest:
     post:
       summary: Build a Markdown digest from email summaries
@@ -74,10 +119,12 @@ paths:
                 summaries:
                   type: array
                   items:
-                    type: object
-                    properties:
-                      summary:
-                        type: string
+                    oneOf:
+                      - type: string
+                      - type: object
+                        properties:
+                          summary:
+                            type: string
                 audience:
                   type: string
       responses:
@@ -87,9 +134,15 @@ paths:
             text/markdown:
               schema:
                 type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /send-digest:
     post:
-      summary: Send a prepared digest email
+      summary: Send a prepared digest email over SMTP
       operationId: sendDigest
       requestBody:
         required: true
@@ -114,3 +167,17 @@ paths:
                 properties:
                   status:
                     type: string
+                  from:
+                    type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: SMTP upstream failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

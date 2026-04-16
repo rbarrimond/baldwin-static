@@ -1,0 +1,12 @@
+.baldwin-home {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f7f9fc 0%, #eef3fb 100%);
+}
+
+.baldwin-logo {
+  max-width: 120px;
+}
+
+.baldwin-copy {
+  max-width: 40rem;
+}
